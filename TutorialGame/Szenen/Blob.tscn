@@ -1,0 +1,79 @@
+[gd_scene load_steps=12 format=3 uid="uid://b8lvkkhauufoi"]
+
+[ext_resource type="Script" path="res://Szenen/Blob.gd" id="1_ewati"]
+[ext_resource type="Texture2D" uid="uid://b77g07v5c3wxi" path="res://Assets/blob/blob_walk_0.png" id="1_ks4gp"]
+[ext_resource type="Texture2D" uid="uid://bdl4fa4jgb37h" path="res://Assets/blob/blob_walk_1.png" id="2_m1ijs"]
+[ext_resource type="Texture2D" uid="uid://4gh2bshog4uh" path="res://Assets/blob/blob_walk_2.png" id="3_yl05a"]
+[ext_resource type="Texture2D" uid="uid://dow83aj7en8fs" path="res://Assets/blob/blob_walk_3.png" id="4_u365k"]
+[ext_resource type="Texture2D" uid="uid://dm06x3vlijvr1" path="res://Assets/blob/blob_jump_0.png" id="5_es8g4"]
+[ext_resource type="Texture2D" uid="uid://c7r1lfx8cib4k" path="res://Assets/blob/blob_die_0.png" id="6_q8yo5"]
+[ext_resource type="Texture2D" uid="uid://x8pcoytowntv" path="res://Assets/blob/blob_die_1.png" id="7_e6uby"]
+[ext_resource type="Texture2D" uid="uid://b6j21qsx2pe3k" path="res://Assets/blob/blob_die_2.png" id="8_43n5u"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_f4qq5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_ks4gp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_m1ijs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_yl05a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_u365k")
+}],
+"loop": true,
+"name": &"laufen",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_es8g4")
+}],
+"loop": false,
+"name": &"sprung",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_q8yo5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_e6uby")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_43n5u")
+}],
+"loop": false,
+"name": &"sterben",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_usjg8"]
+size = Vector2(13, 6)
+
+[node name="Blob" type="CharacterBody2D"]
+script = ExtResource("1_ewati")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+position = Vector2(-1, -8)
+sprite_frames = SubResource("SpriteFrames_f4qq5")
+animation = &"laufen"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, -3)
+shape = SubResource("RectangleShape2D_usjg8")
+
+[node name="RayCast2DLinks" type="RayCast2D" parent="."]
+position = Vector2(-6, -1)
+target_position = Vector2(0, 2)
+
+[node name="RayCast2DRechts" type="RayCast2D" parent="."]
+position = Vector2(5, -1)
+target_position = Vector2(0, 2)
+
+[connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]

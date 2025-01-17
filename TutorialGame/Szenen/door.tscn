@@ -1,0 +1,45 @@
+[gd_scene load_steps=4 format=3 uid="uid://byxwagu3ujy4e"]
+
+[ext_resource type="Texture2D" uid="uid://bfjc37jwrhnkd" path="res://Assets/door.png" id="1_kefdq"]
+
+[sub_resource type="GDScript" id="GDScript_q0o1w"]
+script/source = "extends Node2D
+
+signal enter_door
+	
+
+@export var level_number:int
+@export var door_name:String
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _physics_process(delta):
+	for body in $Area2D.get_overlapping_bodies():
+		if body.name == \"Player\" and Input.is_action_just_pressed(\"jump\"):
+			Globals.next_level_door = door_name
+			Globals.next_level_number = level_number
+			emit_signal(\"enter_door\")
+			
+	
+"
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tlmlx"]
+size = Vector2(12, 2)
+
+[node name="Door" type="Node2D"]
+script = SubResource("GDScript_q0o1w")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(0, -16)
+texture = ExtResource("1_kefdq")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(0, -1)
+shape = SubResource("RectangleShape2D_tlmlx")

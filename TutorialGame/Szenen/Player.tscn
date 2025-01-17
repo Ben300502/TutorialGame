@@ -1,0 +1,168 @@
+[gd_scene load_steps=16 format=3 uid="uid://bssxr44jv6ltt"]
+
+[ext_resource type="Texture2D" uid="uid://i0shsgansq78" path="res://Assets/Player.png" id="1_oxkrc"]
+
+[sub_resource type="GDScript" id="GDScript_y8aq2"]
+script/source = "extends CharacterBody2D
+
+const GRAVITATION = 400
+const SPEED = 60
+const JUMP_POWER = 150
+
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _physics_process(delta):
+	velocity.x = 0
+	velocity.y += GRAVITATION * delta
+	check_key_input()
+	check_for_stomp()
+	set_animation()
+	move_and_slide()
+	
+	
+	
+func check_key_input():
+	if Input.is_action_pressed(\"left\"):
+		velocity.x = -SPEED
+	if Input.is_action_pressed(\"right\"):
+		velocity.x = SPEED
+	if Input.is_action_just_pressed(\"jump\") and is_on_floor():
+		velocity.y = -JUMP_POWER
+		
+func set_animation():
+	if velocity.x < 0:
+		$AnimatedSprite2D.flip_h = true
+		$AnimatedSprite2D.play(\"laufen\")
+	if velocity.x > 0:
+		$AnimatedSprite2D.flip_h = false
+		$AnimatedSprite2D.play(\"laufen\")
+	if velocity.x == 0:
+		$AnimatedSprite2D.play(\"default\")
+	if !is_on_floor():
+		$AnimatedSprite2D.play(\"sprung\")
+	
+func check_for_stomp():
+	for body in $HitBox.get_overlapping_bodies():
+		if body.has_method(\"on_stomp\") and body.is_alive:
+			body.on_stomp()
+			velocity.y = -JUMP_POWER * 0.8
+"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_36dvp"]
+atlas = ExtResource("1_oxkrc")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r6wel"]
+atlas = ExtResource("1_oxkrc")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ppblu"]
+atlas = ExtResource("1_oxkrc")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_witbq"]
+atlas = ExtResource("1_oxkrc")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_62ttg"]
+atlas = ExtResource("1_oxkrc")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ju3i8"]
+atlas = ExtResource("1_oxkrc")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4x6ud"]
+atlas = ExtResource("1_oxkrc")
+region = Rect2(80, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hdvp2"]
+atlas = ExtResource("1_oxkrc")
+region = Rect2(96, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rqmuc"]
+atlas = ExtResource("1_oxkrc")
+region = Rect2(112, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kb8wp"]
+atlas = ExtResource("1_oxkrc")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8ex7f"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_36dvp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r6wel")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ppblu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_witbq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_62ttg")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ju3i8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4x6ud")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hdvp2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rqmuc")
+}],
+"loop": true,
+"name": &"laufen",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kb8wp")
+}],
+"loop": true,
+"name": &"sprung",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7c1s1"]
+size = Vector2(10, 11)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lfnov"]
+size = Vector2(8, 5)
+
+[node name="Player" type="CharacterBody2D"]
+script = SubResource("GDScript_y8aq2")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_8ex7f")
+animation = &"sprung"
+autoplay = "default"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2.5)
+shape = SubResource("RectangleShape2D_7c1s1")
+
+[node name="HitBox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
+position = Vector2(0, 6.5)
+shape = SubResource("RectangleShape2D_lfnov")
