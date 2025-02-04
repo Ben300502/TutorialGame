@@ -40,9 +40,6 @@ func put_camera_on_player():
 	
 func _on_enter_door():
 	get_tree().reload_current_scene()
-
-
-
 "
 
 [node name="Spiel" type="Node2D"]
